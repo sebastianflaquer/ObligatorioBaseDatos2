@@ -244,10 +244,50 @@ insert into pais values
 	('ZMB', 'Zambia'), 
 	('ZWE', 'Zimbabue')
  
+select *
+from usuario
 
- 
-insert into usuario values
-	()
+insert into usuario (usuarioTelefono, usuarioNombre, usuarioUltimaActividad, usuarioEstado, paisId) values
+	('23259874','Carlos Montero','2012-10-23 20:44:11','En el Gimnasio','BEL'),
+	('36584569','Pablo Pintos','2010-01-05 20:44:11','En el Trabajo','DEU'),
+	('44589632','Jonathan Silvera','2011-02-05 22:56:11','En el Trabajo','TUN'),
+	('55893653','Luis Gomez','2014-03-24 22:56:11','Ocupado','BRA'),
+	('61458741','Alvaro Gonzalez','2014-04-24 20:44:11','En el Gimnasio','BRA'),
+	('76587412','Cristian Albin','2015-05-23 20:44:11','En el Gimnasio','BEL'),
+	('83698547','Laura Conde','2012-06-23 02:46:11','En el Gimnasio','BRA'),
+	('99876532','Ana Dominguez','2011-07-24 02:46:11','Ocupado','COL'),
+	('11456398','Radamel Falcao','2010-08-24 02:46:11','Ocupado','IRL'),
+	('29874158','Andrea Guirin','2010-09-08 20:44:11','Durmiendo','COL'),
+	('39876547','Pablo Bengoechea','2012-10-08 20:44:11','Durmiendo','COL'),
+	('43659632','Gonzalo Porras','2011-11-23 20:44:11','En el Gimnasio','PER'),
+	('65874569','Gianni Rodriguez','2012-12-23 02:46:11','En el Gimnasio','BOL'),
+	('76987412','Antonio Pacheco','2011-01-23 02:46:11','En el Trabajo','DEU'),
+	('85463698','Marcela Gerez','2014-02-30 20:44:11','En el Trabajo','PER'),
+	('94789632','Marcelo Zalayeta','2010-03-30 20:44:11','Disponible','ESP'),
+	('15478963','Juana Mendez','2010-04-24 15:25:11','Disponible','ESP'),
+	('26587146','Patricia Diaz','2010-05-15 15:25:11','Disponible','JPN'),
+	('39874563','Maria Torres','2014-06-15 20:44:11','Disponible','TUN'),
+	('45369875','Gaston Silvestre','2013-07-15 02:46:11','En el Gimnasio','IRL'),
+	('55879632','Carlos Luque','2015-08-15 02:46:11','En el Gimnasio','JPN'),
+	('55217856','Mario Poloni','2014-09-23 20:44:11','En el Gimnasio','URY'),
+	('65693256','Nicolas Albarracin','2015-10-23 15:25:11','Ocupado','JPN'),
+	('75448965','Hernan Novick','2012-11-19 15:25:11','Ocupado','RUS'),
+	('85789658','Daiana Callero','2011-12-19 15:25:11','En el Trabajo','IRL'),
+	('94259061','Diana Montelongo','2011-01-23 20:44:11','En el Trabajo','RUS'),
+	('13581443','Ricardo Kaka','2013-02-30 08:25:11','En el Gimnasio','NZL'),
+	('26386758','Cristian Rodriguez','2012-03-23 08:25:11','En el Gimnasio','URY'),
+	('33067889','Valeria Recoba','2010-04-23 08:25:11','Ocupado','TUR'),
+	('43571289','Victoria Velez','2010-05-14 20:44:11','Disponible','TUR'),
+	('53883708','Tomas Gonzalez','2012-06-19 15:25:11','Durmiendo','TUN'),
+	('69511813','Diego Aguirre','2013-07-14 15:25:11','Durmiendo','URY'),
+	('74436952','Agustina Hernandez','2014-08-23 15:25:11','Durmiendo','NZL'),
+	('89685678','Tatiana Castro','2011-09-05 20:44:11','Disponible','TUR'),
+	('92043759','Lautaro Otero','2013-10-05 20:44:11','Ocupado','VEN'),
+	('17295330','Enrique Gomez','2012-11-05 22:56:11','En el Trabajo','URY'),
+	('27550181','Joaquin Perez','2010-12-23 22:56:11','Disponible','NZL'),
+	('37513583','Santiago Monterrey','2010-10-23 08:25:11','Durmiendo','VEN'),
+	('41200741','Ines Martinez','2012-10-23 20:44:11','Durmiendo','URY')
+
 
 insert into chat values
 	()
@@ -272,13 +312,6 @@ insert into contacto values
 
 insert into bloqueado values
 
-
-
-
-CREATE TABLE pais(
-paisId char(3), 
-paisNombre varchar(50)
-)
 
 CREATE TABLE usuario(
 usuarioId int, 
