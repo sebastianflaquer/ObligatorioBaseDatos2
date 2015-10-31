@@ -9,6 +9,8 @@ paisNombre varchar(50)
 )
 
 
+
+
 CREATE TABLE usuario(
 usuarioId int, 
 usuarioTelefono varchar(20), 
