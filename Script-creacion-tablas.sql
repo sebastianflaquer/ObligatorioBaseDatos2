@@ -2,12 +2,6 @@ Create database ObligatorioBD2;
 
 use ObligatorioBD2;
 
-
-
-
-
-
-
 CREATE TABLE pais(
 paisId char(3), 
 paisNombre varchar(50)
