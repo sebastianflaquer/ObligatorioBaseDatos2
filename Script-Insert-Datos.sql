@@ -1,6 +1,3 @@
-select *
-from pais
-
 
 insert into pais values
 	('AFG', 'Afganistán'),
@@ -244,6 +241,8 @@ insert into pais values
 	('ZMB', 'Zambia'), 
 	('ZWE', 'Zimbabue')
 
+select *
+from usuario
 
 insert into usuario (usuarioTelefono, usuarioNombre, usuarioUltimaActividad, usuarioEstado, paisId) values
 	('23259874','Carlos Montero','2012-10-23 20:44:11','En el Gimnasio','BEL'),
@@ -286,7 +285,6 @@ insert into usuario (usuarioTelefono, usuarioNombre, usuarioUltimaActividad, usu
 	('37513583','Santiago Monterrey','2010-10-23 08:25:11','Durmiendo','VEN'),
 	('41200741','Ines Martinez','2012-10-23 20:44:11','Durmiendo','URY')
 
-use ObligatorioBD2
 insert into chat values
 	(2,'2014-01-24T12:32:01', 0, 1),
 	(2,'2015-03-12T05:50:07', 1, 2),
@@ -327,9 +325,7 @@ insert into chat values
 	(24,'2012-03-05T01:27:12', 0, 37),
 	(38,'2013-02-25T02:28:42', 0, 38),
 	(39,'2014-01-05T03:29:56', 1, 39),
-	(40,'2014-01-01T04:30:12', 0, 40)
-
-
+	(39,'2014-01-01T04:30:12', 0, 40)
 
 insert into chatParticipante values
 	(1, 7),
@@ -371,8 +367,8 @@ insert into chatParticipante values
 	(37, 34),
 	(38, 35),
 	(39, 9),
-	(40, 37),
-	(19, 40),
+	(39, 37),
+	(19, 39),
 	(20, 11),
 	(21, 12),
 	(22, 17),
@@ -402,8 +398,13 @@ insert into grupoAdmin values
 	(16, 17),
 	(17, 20),
 	(19, 9),
+	(19, 39),
+	(22, 7),
+	(23, 18),
+	(20, 13),
 	(20, 12),
 	(21, 29),
+	(21, 23),
 	(22, 21),
 	(22, 11),
 	(22, 31),
@@ -429,53 +430,69 @@ insert into grupoAdmin values
 	(37, 9),
 	(38, 15),
 	(39, 19),
-	(40, 37),
-	(19, 40),
-	(20, 12),
-	(21, 23),
-	(22, 7),
-	(23, 18)
+	(39, 37)
 
+/* de 35 a 59 */
+insert into archivo values
+	(Cast('000001111100001' As varbinary(max))),
+	(Cast('000001111100000' As varbinary(max))),
+	(Cast('000001111100010' As varbinary(max))),
+	(Cast('000001111100001' As varbinary(max))),
+	(Cast('000001111100101' As varbinary(max))),
+	(Cast('000001111100111' As varbinary(max))),
+	(Cast('000001111100110' As varbinary(max))),
+	(Cast('000001111101111' As varbinary(max))),
+	(Cast('000001111101011' As varbinary(max))),
+	(Cast('000001111101001' As varbinary(max))),
+	(Cast('100001111101100' As varbinary(max))),
+	(Cast('010001111101100' As varbinary(max))),
+	(Cast('001011101101100' As varbinary(max))),
+	(Cast('001110111101100' As varbinary(max))),
+	(Cast('111111111101100' As varbinary(max))),
+	(Cast('010101111101100' As varbinary(max))),
+	(Cast('101011111101100' As varbinary(max))),
+	(Cast('000000000001100' As varbinary(max))),
+	(Cast('000000010001100' As varbinary(max))),
+	(Cast('000001010101100' As varbinary(max))),
+	(Cast('000001100001100' As varbinary(max))),
+	(Cast('000000001101100' As varbinary(max))),
+	(Cast('000001001101100' As varbinary(max))),
+	(Cast('000110011001100' As varbinary(max))),
+	(Cast('111111111111000' As varbinary(max)))
 
 insert into mensaje values
-	(1, 7, 1, '2012-01-05T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 1),
-	(2, 7, 1, '2013-03-22T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 2),
-	(3, 17, 2, '2014-03-23T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 3),
-	(4, 1, 3, '2015-02-25T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 4),
-	(5, 1, 11, '2015-04-04T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 5),
-	(6, 2, 12, '2015-07-01T01:27:12', 'Audio', 'Pendiente', 'Contenido del Mensaje', 4),
-	(7, 6, 11, '2015-08-02T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 3),
-	(8, 7, 14, '2014-07-03T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 2),
-	(9, 8, 17, '2012-10-08T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 1),
-	(10, 10, 19, '2013-11-09T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 14),
-	(11, 11, 19, '2012-12-10T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 14),
-	(12, 11, 20, '2012-12-16T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 10),
-	(13, 13, 20, '2013-12-17T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 8),
-	(14, 13, 23, '2014-11-17T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 10),
-	(15, 16, 24, '2014-10-16T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 9),
-	(16, 17, 25, '2015-09-15T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 4),
-	(17, 18, 17, '2014-07-05T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 15),
-	(18, 7, 18, '2013-03-15T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 16),
-	(19, 20, 11, '2011-04-01T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 18),
-	(20, 20, 10, '2012-02-02T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 20),
-	(21, 17, 1, '2012-02-08T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 19),
-	(22, 28, 12, '2013-02-11T01:27:12', 'Audio', 'Pendiente', 'Contenido del Mensaje', 19),
-	(23, 23, 2, '2013-08-13T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 4),
-	(24, 26, 5, '2013-07-04T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 14),
-	(25, 32, 5, '2015-08-03T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 17),
-	(26, 33, 5, '2015-09-02T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 18),
-	(27, 30, 7, '2015-10-05T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 2),
-	(28, 30, 22, '2014-03-05T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 3),
-	(29, 30, 2, '2015-04-17T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 20),
-	(30, 28, 17, '2013-07-18T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 21),
-	(31, 7, 14, '2014-08-23T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 2),
-	(32, 17, 15, '2014-08-30T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 4)
-
-
-
-
-insert into archivo values
-	()
+	(1, 7, 1, '2012-01-05T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 41),
+	(2, 7, 1, '2013-03-22T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 42),
+	(3, 17, 2, '2014-03-23T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 43),
+	(4, 1, 3, '2015-02-25T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 44),
+	(5, 1, 11, '2015-04-04T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 45),
+	(6, 2, 12, '2015-07-01T01:27:12', 'Audio', 'Pendiente', 'Contenido del Mensaje', 44),
+	(7, 6, 11, '2015-08-02T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 43),
+	(8, 7, 14, '2014-07-03T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 42),
+	(9, 8, 17, '2012-10-08T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 51),
+	(10, 10, 19, '2013-11-09T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 44),
+	(11, 11, 19, '2012-12-10T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 44),
+	(12, 11, 20, '2012-12-16T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 50),
+	(13, 13, 20, '2013-12-17T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 38),
+	(14, 13, 23, '2014-11-17T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 41),
+	(15, 16, 24, '2014-10-16T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 39),
+	(16, 17, 25, '2015-09-15T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 44),
+	(17, 18, 17, '2014-07-05T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 35),
+	(18, 7, 18, '2013-03-15T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 36),
+	(19, 20, 11, '2011-04-01T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 38),
+	(20, 20, 10, '2012-02-02T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 40),
+	(21, 17, 1, '2012-02-08T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 39),
+	(22, 28, 12, '2013-02-11T01:27:12', 'Audio', 'Pendiente', 'Contenido del Mensaje', 49),
+	(23, 23, 2, '2013-08-13T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 54),
+	(24, 26, 5, '2013-07-04T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 54),
+	(25, 32, 5, '2015-08-03T01:27:12', 'Texto', 'Pendiente', 'Contenido del Mensaje', 37),
+	(26, 33, 5, '2015-09-02T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 48),
+	(27, 30, 7, '2015-10-05T01:27:12', 'Video', 'Pendiente', 'Contenido del Mensaje', 52),
+	(28, 30, 22, '2014-03-05T01:27:12', 'Imagen', 'Pendiente', 'Contenido del Mensaje', 53),
+	(29, 30, 2, '2015-04-17T01:27:12', 'Texto', 'Enviado', 'Contenido del Mensaje', 50),
+	(30, 28, 17, '2013-07-18T01:27:12', 'Audio', 'Enviado', 'Contenido del Mensaje', 41),
+	(31, 7, 14, '2014-08-23T01:27:12', 'Video', 'Enviado', 'Contenido del Mensaje', 42),
+	(32, 17, 15, '2014-08-30T01:27:12', 'Imagen', 'Enviado', 'Contenido del Mensaje', 54)
 
 insert into llamada values
 	(1, 7, '2012-02-05T01:27:12', '2012-02-05T01:29:12', 2, 0),
@@ -486,7 +503,7 @@ insert into llamada values
 	(6, 2, '2015-12-01T07:27:12', '2015-12-01T08:27:12', 60, 1),
 	(7, 6, '2015-02-02T08:27:12', '2015-02-02T08:57:12', 30, 1),
 	(8, 7, '2014-01-03T08:27:12', '2014-01-03T08:37:12', 10, 1),
-	(9, 8, '2012-01-08T09:27:12', '2012-01-08T10:27:12', 60, 0),
+	(9, 8, '2012-01-08T09:27:12', '2012-01-08T10:27:12', 60, 0),	
 	(10, 10, '2013-12-09T11:27:12', '2013-12-09T12:27:12', 60, 0),
 	(11, 11, '2012-11-10T12:27:12', '2012-11-10T14:27:12', 120, 0), 
 	(12, 11, '2012-11-16T13:27:12', '2012-11-16T13:30:12', 3, 1),
@@ -494,13 +511,13 @@ insert into llamada values
 	(14, 13, '2014-11-17T15:27:12', '2014-11-17T15:47:12', 20, 0),
 	(15, 16, '2014-01-16T16:27:12', '2014-01-16T16:28:12', 1, 1),
 	(16, 17, '2015-06-15T16:27:12', '2015-06-15T17:05:12', 32, 0),
-	(17, 18, '2014-06-05T17:27:12', '2014-06-05T18:17:12', 60, 0),
+	(17, 18, '2014-06-05T17:27:12', '2014-06-05T18:17:12', 60, 0),	
 	(18, 7, '2013-03-15T17:07:12', '2013-03-15T17:27:12', 20, 1),
 	(19, 20, '2011-03-01T18:27:12', '2011-03-01T18:28:12', 1, 1),
 	(20, 20, '2012-04-02T18:27:12', '2012-04-02T19:27:12', 60, 1),
 	(21, 17, '2012-04-08T18:27:12', '2012-04-08T18:37:12', 10, 1),
 	(22, 28, '2013-04-11T19:17:12', '2013-04-11T19:23:12', 6, 1),
-	(23, 23, '2013-09-13T19:27:12', '2013-09-13T9:30:12', 3, 0),
+	(23, 23, '2013-09-13T19:27:12', '2013-09-13T09:30:12', 3, 0),	
 	(24, 26, '2013-09-04T20:07:12', '2013-09-04T20:27:12', 20, 0),
 	(25, 32, '2015-08-03T20:07:12', '2015-08-03T10:17:12', 10, 1),
 	(26, 33, '2015-09-02T20:47:12', '2015-09-02T21:20:12', 30, 1),
@@ -527,19 +544,19 @@ insert into llamada values
 	(31, 7, '2015-04-23T22:27:12', '2015-04-23T22:29:12', 2, 1),
 	(32, 13, '2013-08-30T17:27:12', '2013-08-30T17:37:12', 10, 0), 
 	(24, 26, '2012-03-04T18:27:12', '2012-03-04T18:48:12', 20, 1),
-	(25, 4, '2012-08-03T19:27:12', '2012-08-03T191:43:12', 14, 0)
+	(25, 4, '2012-08-03T19:27:12', '2012-08-03T19:43:12', 14, 0)
 
 insert into contacto values
 	(1, 19),
 	(3, 21),
 	(3, 22),
 	(3, 11),
-	(3, 11),
+	(3, 14),
 	(4, 12),
 	(6, 14),
 	(7, 15),
 	(7, 25),
-	(7, 15),
+	(7, 16),
 	(8, 10),
 	(9, 20),
 	(10, 10),
@@ -556,7 +573,7 @@ insert into contacto values
 	(21, 29),
 	(22, 11),
 	(22, 21),
-	(22, 11),
+	(22, 12),
 	(23, 21),
 	(25, 26),
 	(26, 14),
@@ -579,8 +596,8 @@ insert into contacto values
 	(37, 29),
 	(38, 9),
 	(39, 29),
-	(40, 37),
-	(19, 40),
+	(39, 37),
+	(19, 39),
 	(20, 12),
 	(21, 23),
 	(22, 7),
@@ -603,14 +620,14 @@ insert into bloqueado values
 	(14, 14, '2014-11-17T15:27:12'),
 	(15, 11, '2014-01-16T16:27:12'),
 	(16, 17, '2015-06-15T16:27:12'),
-	(17, 18, '2014-06-05T17:27:12'),
+	(17, 16, '2014-06-05T17:27:12'),
 	(18, 7, '2013-03-15T17:07:12'),
 	(19, 20, '2011-03-01T18:27:12'),
 	(20, 20, '2012-04-02T18:27:12'),
 	(21, 17, '2012-04-08T18:27:12'),
 	(22, 28, '2013-04-11T19:17:12'),
 	(23, 23, '2013-09-13T19:27:12'),
-	(24, 26, '2013-09-04T20:07:12'),
+	(24, 16, '2013-09-04T20:07:12'),
 	(25, 32, '2015-08-03T20:07:12'),
 	(26, 23, '2015-09-02T20:47:12'),
 	(27, 30, '2015-10-05T20:47:12'),
@@ -630,67 +647,10 @@ insert into bloqueado values
 	(15, 26, '2015-10-16T02:27:12'),
 	(16, 27, '2011-09-15T02:27:12'),
 	(17, 18, '2013-07-05T02:27:12'),
-	(18, 7, '2014-08-15T03:27:12'),
+	(18, 6, '2014-08-15T03:27:12'),
 	(29, 3, '2014-04-17T04:27:12'),
 	(30, 8, '2015-07-18T21:27:12'),
 	(31, 7, '2015-04-23T22:27:12'),
 	(32, 13, '2013-08-30T17:27:12'), 
 	(24, 26, '2012-03-04T18:27:12'),
 	(25, 4, '2012-08-03T19:27:12')
-
-
-CREATE TABLE chat(
-chatId int, 
-usuarioCreador int, 
-chatFechaCreacion datetime, 
-esGrupo bit
-)
-
-CREATE TABLE chatParticipante(
-chatId int, 
-usuarioParticipante int
-)
-
-CREATE TABLE grupoAdmin(
-chatId int, 
-usuarioId int
-)
-
-CREATE TABLE mensaje(
-mensajeId int, 
-chatId int, 
-usuarioId int, 
-fechaMensaje datetime, 
-mensajeTipo varchar(6),
-mensajeEstado varchar(10), 	
-mensajeTexto varchar(1000), 
-archivoId int
-)
-
-CREATE TABLE archivo(
-archivoId int, 
-archivoContenido VARBINARY(MAX)
-)
-
-CREATE TABLE llamada(
-llamador int, 
-receptor int, 
-fechaComienzo datetime, 
-fechaFin datetime, 
-duracion int, 
-respondida bit
-)
-
-CREATE TABLE contacto(
-usuarioId int, 
-contactoId int
-)
-
-CREATE TABLE bloqueado(
-usuarioId int, 
-contactoBloqueadoId int, 
-fechaBloqueado datetime
-)
-
-
-

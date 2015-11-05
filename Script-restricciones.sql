@@ -52,9 +52,8 @@ Add Constraint fk_paisId foreign Key (paisId) references pais
 --esGrupo bit
 --)
 
-
-Alter table chat
-alter column chatId int not Null
+alter table chat
+drop column chatId
 
 alter table chat 
 add chatId int primary key
@@ -112,8 +111,19 @@ Add Constraint fk_chatId_grupoAdmin foreign Key (chatId) references chat(chatId)
 alter table grupoAdmin
 Add Constraint fk_usuarioId_grupoAdmin foreign Key (usuarioId) references usuario(usuarioId)
 
+--CREATE TABLE archivo(
+--archivoId int, 
+--archivoContenido VARBINARY(MAX)
+--)
+
+alter table archivo drop column archivoId
+
+alter table archivo 
+add archivoId int primary key identity
 
 
+Alter table archivo
+alter column archivoContenido int not Null
 
 --CREATE TABLE mensaje(
 --mensajeId int, 
@@ -142,31 +152,11 @@ Add Constraint fk_usuarioId_mensaje foreign Key (usuarioId) references usuario(u
 alter table mensaje
 Add Constraint fk_archivoId_mensaje foreign Key (archivoId) references archivo(archivoId)
 
-
 alter table mensaje
 add constraint ck_mensajeTipo check (mensajeTipo IN ('Texto', 'Audio', 'Video', 'Imagen'))
 
 alter table mensaje
 add constraint ck_mensajeEstado check (mensajeEstado IN ('Enviado', 'Pendiente'))
-
-
-
-
---CREATE TABLE archivo(
---archivoId int, 
---archivoContenido VARBINARY(MAX)
---)
-
-alter table archivo drop column archivoId
-
-alter table archivo 
-add archivoId int primary key identity
-
-
-Alter table archivo
-alter column archivoContenido int not Null
-
-
 
 
 --CREATE TABLE llamada(
