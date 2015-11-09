@@ -1,40 +1,40 @@
 --a. Mostrar el/los id de chat creado/s por usuarios uruguayos, que tenga más archivos.
 
-select chatId	
-from chat c, usuario u, pais p
-where c.usuarioCreador = u.usuarioId
-and p.paisId = (select paisId from pais where paisNombre ='Uruguay')
-
-select chatId	
-from chat c, usuario u, pais p
-where c.usuarioCreador = u.usuarioId
-and u.paisId = p.paisId
-and p.paisNombre = 'Uruguay'
-group by(chatId)
-having count(*)>= all (select count(*) from archivo group by(archivoId))
-
-select chatId	
-from chat c, usuario u, pais p
-where c.usuarioCreador = u.usuarioId
-and u.paisId = p.paisId
-and p.paisNombre = 'Uruguay'
-group by(chatId)
-having count(*)>= all (select count(*) from archivo group by(archivoId))
-
-
-
-
-
-
-
-
-
-
+select m.chatId
+from mensaje m, chat c
+where m.chatId = c.chatId
+and usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
+group by m.chatId
+having COUNT(*)
+>=ALL (select count(*) from archivo group by archivoId)
 
 
 
 --b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
---c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad, la cantidad de grupos en los que participa y la cantidad de chat no grupales en los que participa. En caso de que el usuario no participe en chats, igual deberá aparecer en el resultado de la consulta.
+
+select u.usuarioId, u.usuarioTelefono
+from usuario u, chatParticipante cp, grupoAdmin g
+where u.usuarioId = cp.usuarioParticipante
+and cp.usuarioParticipante = g.usuarioId
+and cp.chatId IN (select chatId from chat where esGrupo = 1)
+and g.usuarioId IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
+
+
+
+
+--c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad,
+--	 la cantidad de grupos en los que participa y la cantidad de chat no grupales en los que participa.
+--	 En caso de que el usuario no participe en chats, igual deberá aparecer en el resultado de la consulta.
+
+
+select usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, count(chatId)
+from usuario u, chat c
+
+
+
+
+
+
 --d. Realizar una consulta que devuelva para cada usuario (id de usuario) el id del chat de grupo con más usuarios al que pertenece. En caso de que haya más de un grupo con la máxima cantidad, deben aparecer todos en el resultado de la consulta (id usuario, id chat). En caso de que haya usuarios que no participen en grupos, también deberán aparecer en el resultado de la consulta.
 --e. Mostrar los datos de los usuarios que no sean administradores de grupos, que participen en más de 4 grupos y que hayan sido bloqueados por más usuarios que la cantidad de contactos que tiene.
 --f. Devolver id y teléfono de los usuarios que: o no participan de chats grupales, o participan en más de 5 chats grupales con más de 5 participantes cada uno.
