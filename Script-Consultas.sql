@@ -9,6 +9,18 @@ having COUNT(*)
 >=ALL (select count(*) from archivo group by archivoId)
 
 
+-- SEGUNDA OPCION
+select m.chatID
+from mensaje m, chat c
+where m.chatId = c.chatId
+AND usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
+group by m.chatId
+having COUNT(*)
+>= ALL (select chatId, COUNT (archivoId) from mensaje group by chatId)
+
+
+
+
 
 --b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
 
