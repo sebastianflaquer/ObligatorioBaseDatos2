@@ -84,8 +84,35 @@ where p.paisId =
 -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
 -- mensajes generados el año pasado.
 
+select u.usuarioId, u.usuarioTelefono
+from usuario u, mensaje m
+
+
+select *
+from mensaje m
+where m.fechaMensaje = YEAR(GETDATE()-1)
+
 
 -- i. Devolver para cada país el promedio de contactos por usuario.
+
+select p.paisId, AVG(c.contactoId) AS Contacto
+from pais p, usuario u, contacto c
+where p.paisId = u.paisId
+and u.usuarioId = c.contactoId
+GROUP BY p.paisId
+
+select *
+from usuario
+
+select *
+from contacto
+
+select c.usuarioId, p.paisId, COUNT(c.usuarioId)
+from contacto c, pais p, usuario u
+where c.usuarioId = u.usuarioId
+and p.paisId = u.paisId
+and u.usuarioId = c.usuarioId
+group by c.usuarioId, p.paisId
 
 
 -- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
