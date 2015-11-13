@@ -20,6 +20,9 @@ having COUNT(*)
 
 
 
+/* para lipiar el ident */
+dbcc checkident ('nom_tabla', reseed, valor (tiene que ser un entero))
+
 
 
 --b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
