@@ -50,6 +50,7 @@ create procedure infoChat
 			
 	end
 
+	/* testeo */
 	declare @cantidadUsuarioChat int, @fechaCreacionChat date, @cantidadMEnviadosChat int, @cantidadArchivosChat int, @cantidadAdminChar int
 	exec infoChat 7, @cantidadUsuarioChat output, @fechaCreacionChat output, @cantidadMEnviadosChat output, @cantidadArchivosChat output, @cantidadAdminChar output
 	print @cantidadUsuarioChat print @fechaCreacionChat print @cantidadMEnviadosChat print @cantidadArchivosChat print @cantidadAdminChar
@@ -103,6 +104,7 @@ create procedure datosUsuario
 
 	end
 
+	/* testeo */
 	declare @cantidadChatParticipa int, @cantidadMensajesGenerados int, @cantidadContactos int, @cantidadLlamadasRealizadas int, @cantidadUsuariosQueLoBloq int
 	exec datosUsuario 8, @cantidadChatParticipa output, @cantidadMensajesGenerados output, @cantidadContactos output, @cantidadLlamadasRealizadas output, @cantidadUsuariosQueLoBloq output
 	print @cantidadChatParticipa print @cantidadMensajesGenerados print @cantidadContactos print @cantidadLlamadasRealizadas print @cantidadUsuariosQueLoBloq
@@ -110,6 +112,30 @@ create procedure datosUsuario
 
 -- c. Implementar una función 'cantUsuariosMensajeFecha', que reciba como parámetros el id de un chat y un rango de fechas,
 -- devolviendo la cantidad de usuarios distintos que generaron mensajes en el chat durante el período recibido como parámetro.
+
+create function cantUsuariosMensajeFecha
+(
+@chatId int,
+@fechaInicio date,
+@fechaFin date
+)
+returns int
+as
+begin
+
+declare @cantUsu int
+
+select @cantUsu = count(distinct usuarioId)
+from mensaje 
+where chatId = @chatId
+and fechaMensaje between @fechaInicio and @fechaFin
+
+return @cantUsu
+end
+
+/* testeo */
+SELECT [dbo].[cantUsuariosMensajeFecha](7, '2000-01-05T01:27:12.000', '2016-01-05T01:27:12.000') as RESULTADO
+
 
 -- d. Implementar una procedimiento almacenado 'crearLlamada', que reciba como parámetros el id del usuario llamador, el id
 -- del usuario receptor y registre la llamada con la fecha actual en la tabla llamada.
@@ -126,10 +152,74 @@ create procedure crearLlamada
 
 	end
 
-exec crearLlamada 5, 7
+	/* testeo */
+	exec crearLlamada 5, 7
 
 -- e. Crear una función 'llamadasMensajes', que reciba una fecha y devuelva la cantidad de usuarios que en dicha fecha
 -- realizaron más llamadas que la cantidad de mensajes que escribieron en la fecha.
+
+create function llamadasMensajes
+(
+@fechaDada date
+)
+returns int
+as
+begin
+
+declare @cantUsu int, 
+@cantLlamadas int
+
+select @cantLlamadas = COUNT(*)
+from llamada ll
+where CAST(ll.fechaComienzo as DATE) = CAST(@fechaDada as DATE)
+
+select @cantUsu = COUNT(distinct ll.llamador)
+from llamada ll
+where CAST(ll.fechaComienzo as DATE) = CAST(@fechaDada as DATE)
+AND @cantLlamadas > (select count(m.mensajeId)
+			from mensaje m
+			where m.fechaMensaje = @fechaDada)
+
+return @cantUsu
+end
+
+/* testeo */
+SELECT [dbo].[llamadasMensajes]('2012-02-05T01:27:12.000') as RESULTADO
+
+
+
+/*********************************************************************** pruebas */
+select count(m.usuarioId)
+from mensaje m
+where m.usuarioId = 1
+AND CAST(m.fechaMensaje as DATE) = '2012-02-05'
+
+select count(*)
+from llamada ll
+where ll.llamador = 1
+AND CAST(ll.fechaComienzo as DATE) = '2012-02-05'
+
+select COUNT(distinct ll.llamador)
+from llamada ll
+where CAST(ll.fechaComienzo as DATE) = CAST('2012-02-05T01:27:12.000' as DATE)
+AND 0 > (select count(m.mensajeId)
+			from mensaje m
+			where m.fechaMensaje = '2012-02-05T01:27:12.000')
+
+select *
+from mensaje
+
+select *
+from llamada
+
+
+/*********************************************************************** pruebas */
+
+
+
+
+
+
 
 -- f. Crear un procedimiento almacenado 'usuariosPais' que dado el código de un país, devuelva por parámetro: 
 -- el nombre del país, 
@@ -174,6 +264,7 @@ create procedure usuariosPais
 	
 	end
 
+	/* testeo */
 	declare @paisNombre varchar(50), @cantidadUsuario int, @cantidadUsuariosBloq int, @cantidadUsuariosSinBloq int
 	exec usuariosPais 'URY', @paisNombre output, @cantidadUsuario output, @cantidadUsuariosBloq output, @cantidadUsuariosSinBloq output
 	print @paisNombre print @cantidadUsuario print @cantidadUsuariosBloq print @cantidadUsuariosSinBloq
@@ -183,8 +274,50 @@ create procedure usuariosPais
 -- que escribió más mensajes del tipo texto en el año.
 
 
+-- dado un año dame el id de usuario que tiene mas mensajes de tipo texto
+
+/**************************************************************************** mauro */
+create function usuarioMasMensajesTextoAnio
+(
+@anio int
+)
+returns int
+as
+begin 
+declare @usuarioId int
+
+select @usuarioId = m.usuarioId
+from mensaje m
+where mensajeTipo = 'Texto'
+and year(fechaMensaje) = @anio
+group by usuarioId
+having COUNT(*) >= all (select count(mensajeId) from mensaje where mensajeTipo = 'Texto' group by usuarioId)
+
+end
+/**************************************************************************** mauro */
+
+select m.usuarioId
+from mensaje m
+where mensajeTipo = 'Texto'
+and year(fechaMensaje) = 2015
+group by usuarioId
+having COUNT(mensajeId) >= all (select count(mensajeId) from mensaje where mensajeTipo = 'Texto' group by usuarioId)
 
 
+
+select m.usuarioId
+from mensaje m
+where mensajeTipo = 'Texto'
+and year(fechaMensaje) = 2015
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------
 
 create procedure sp_cambio_supervisor 
 	@codigoProy int,
