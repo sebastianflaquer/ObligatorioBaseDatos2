@@ -1,17 +1,6 @@
-CREATE TRIGGER IngresoEstudiante
-ON Estudiantes
-AFTER INSERT
-AS
-BEGIN
-SET NOCOUNT ON;
-INSERT INTO IngresosEstudiantes(idEstudiante, nomEstudiante, fchINGSistema)
-SELECT estudianteCod, nombre, GETDATE()
-FROM INSERTED;
-END;
 
 
-
--- a. No permitir registrar un administrador de grupo si el usuario no es un participante del grupo.
+-- LISTO a. No permitir registrar un administrador de grupo si el usuario no es un participante del grupo.
 
 create trigger nopermiteregistroadmin
 on GrupoAdmin
@@ -24,50 +13,48 @@ insert grupoAdmin
 	from inserted i, chatParticipante cp 
 	where i.chatId = cp.chatId
 	and i.usuarioId IN (select usuarioParticipante from chatParticipante)
-	print 'se agrego admin';
 end
 
-insert into grupoAdmin values (13,5) 
+insert into grupoAdmin values (1,3) 
 
 select * from grupoAdmin
 select * from chatParticipante
 
--- b. Cuando se realice un DELETE sobre la tabla usuario, el o los usuarios afectados por el DELETE efectivamente
--- se elimine/n de la base de datos (eliminar de las tablas que lo referencian).
+-- LITSO - b. Cuando se realice un DELETE sobre la tabla usuario, el o los usuarios afectados por el DELETE efectivamente
+---------- se elimine/n de la base de datos (eliminar de las tablas que lo referencian).
 
-alter trigger tr_ejer_b
+create trigger tr_ejer_b
 on usuario
 instead of delete
 as
 begin
 
-
 delete from bloqueado
-where usuarioId = (select deleted.usuarioId from deleted)
-OR contactoBloqueadoId = (select deleted.usuarioId from deleted)
+where usuarioId in (select deleted.usuarioId from deleted)
+OR contactoBloqueadoId in (select deleted.usuarioId from deleted)
 
 delete from contacto
-where usuarioId = (select deleted.usuarioId from deleted)
-or contactoId = (select deleted.usuarioId from deleted)
+where usuarioId in (select deleted.usuarioId from deleted)
+or contactoId in (select deleted.usuarioId from deleted)
 
 delete from llamada
-where llamador = (select deleted.usuarioId from deleted)
-or receptor = (select deleted.usuarioId from deleted)
+where llamador in (select deleted.usuarioId from deleted)
+or receptor in (select deleted.usuarioId from deleted)
 
 delete from mensaje
-where usuarioId = (select deleted.usuarioId from deleted)
+where usuarioId in (select deleted.usuarioId from deleted)
 
 delete from grupoAdmin
-where usuarioId = (select deleted.usuarioId from deleted)
+where usuarioId in (select deleted.usuarioId from deleted)
 
 delete from chatParticipante
-where usuarioParticipante = (select deleted.usuarioId from deleted)
+where usuarioParticipante in (select deleted.usuarioId from deleted)
 
 delete from chat
-where usuarioCreador = (select deleted.usuarioId from deleted)
+where usuarioCreador in (select deleted.usuarioId from deleted)
 
 delete from usuario
-where usuarioId = (select deleted.usuarioId from deleted)
+where usuarioId in (select deleted.usuarioId from deleted)
 
 end
 
@@ -113,8 +100,7 @@ where usuarioId = 44
 select *
 from usuario
 
-
--- c. Cuando se crea un chat, agregar automáticamente como participante al usuario creador del chat.
+-- LISTO c. Cuando se crea un chat, agregar automáticamente como participante al usuario creador del chat.
 
 create trigger tr_ejer_C
 on chat
@@ -129,7 +115,7 @@ from inserted
 end
 
 insert into chat values
-	(2,'2014-01-24T12:32:01', 0, 41)
+	(2,'2014-01-24T12:32:01', 0, 42)
 
 select *
 from chat
@@ -138,7 +124,7 @@ select *
 from chatParticipante
 
 
--- d. No permitir que haya más de 2 participantes de un chat si el chat no es grupal.
+-- LISTO d. No permitir que haya más de 2 participantes de un chat si el chat no es grupal.
 
 alter trigger tr_ejer_d
 on chatParticipante 
@@ -154,14 +140,12 @@ select i.chatId, i.usuarioParticipante
 	or (ch.esGrupo = 0 
 		and 2 < (select count(chatId)
 				from chatParticipante ch
-				where ch.chatId = i.chatId))
+				where ch.chatId = i.chatId)
 end
 
 
 insert into chatParticipante values
 	(1, 7)
-
-
 	
 
 select i.chatId, i.usuarioParticipante	
@@ -171,9 +155,6 @@ select i.chatId, i.usuarioParticipante
 	or 2 < (select count(chatId)
 				from chatParticipante ch
 				where ch.chatId = 1)
-
-
-
 
 insert chatParticipante values (19, 2)
 
@@ -190,24 +171,36 @@ SELECT *
 FROM usuario
 
 
+-- FALTA e. Cuando se registre la fecha de fin de una llamada, registrar la duración de la misma.
 
-
--- e. Cuando se registre la fecha de fin de una llamada, registrar la duración de la misma.
-
-create trigger tr_ejer_e
+alter trigger tr_ejer_e
 on llamada
-after insert, update
+after insert
 as
-begin
-
+begin	
 	UPDATE llamada
-	SET duracion = 
+	SET duracion = datediff(SECOND, CAST(inserted.fechaComienzo as datetime), CAST(inserted.fechaFin as datetime))
+	from inserted, llamada
+	where llamada.llamador = inserted.llamador 
+	AND llamada.receptor = inserted.receptor
+	AND llamada.fechaComienzo = inserted.fechaComienzo
+end
 
-END
+insert into llamada values
+	(2, 10, '2015-02-05T01:27:12', '2015-02-05T01:28:12', null, 0)
 
--- f. Crear un trigger que registre en un log cada vez que se elimina un mensaje (se deben persistir todos los datos
--- originales del mensaje, así como también la fecha de eliminación). Implementar la estructura necesaria para
--- soportar este trigger.
+select datediff(SECOND, CAST('2015-02-05T01:27:12' as datetime) , CAST('2015-02-05T01:28:12' as datetime))
+					from inserted
+
+select *
+from llamada
+
+select * 
+from usuario
+
+-- LISTO - f. Crear un trigger que registre en un log cada vez que se elimina un mensaje (se deben persistir todos los datos
+---------- originales del mensaje, así como también la fecha de eliminación). Implementar la estructura necesaria para
+---------- soportar este trigger.
 
 create table logmensage (
 	mensajeId int,
@@ -218,7 +211,7 @@ create table logmensage (
 	mensajeEstado varchar(10),
 	mensajeTexto varchar(1000),
 	archivoId int,
-	fechaEliminacion date
+	fechaEliminacion datetime
 )
 
 create trigger tr_ejer_f
@@ -235,7 +228,7 @@ select *
 from mensaje
 
 DELETE FROM mensaje
-WHERE mensajeId=3;
+WHERE mensajeId=5;
 
 SELECT *
 FROM logmensage
