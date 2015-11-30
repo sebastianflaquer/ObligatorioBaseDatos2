@@ -140,17 +140,11 @@ select i.chatId, i.usuarioParticipante
 	or (ch.esGrupo = 0 
 		and 2 > (select count(chatId)
 				from chatParticipante ch
-<<<<<<< HEAD
-				where ch.chatId = 1)))
-=======
-				where ch.chatId = i.chatId)
->>>>>>> baaf08ead2c5b04447475aadf0a4c5953750f82b
 end
 
 
-insert into chatParticipante values
-<<<<<<< HEAD
-	(1, 6)
+insert into chatParticipante values	
+(1, 6)
 
 select *
 from chat where chatid = 1
@@ -161,10 +155,6 @@ select *
 from chatParticipante
 where chatid = 1
 
-=======
-	(1, 7)
-	
->>>>>>> baaf08ead2c5b04447475aadf0a4c5953750f82b
 
 select i.chatId, i.usuarioParticipante	
 	from inserted i, chat ch
