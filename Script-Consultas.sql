@@ -1,4 +1,4 @@
---a. Mostrar el/los id de chat creado/s por usuarios uruguayos, que tenga más archivos.
+-- LISTO--a. Mostrar el/los id de chat creado/s por usuarios uruguayos, que tenga más archivos.
 
 select m.chatId
 from mensaje m, chat c
@@ -6,24 +6,18 @@ where m.chatId = c.chatId
 and usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
 group by m.chatId
 having COUNT(*)
->=ALL (select count(*) from archivo group by archivoId)
+>=ALL (select count(archivoId) from mensaje m, chat c
+			where m.chatId = c.chatId
+			and usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
+			group by m.chatId)
 
-
--- SEGUNDA OPCION
-select m.chatID
-from mensaje m, chat c
-where m.chatId = c.chatId
-AND usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
-group by m.chatId
-having COUNT(*)
->= ALL (select chatId, COUNT (archivoId) from mensaje group by chatId)
 
 /* para lipiar el ident */
-dbcc checkident ('nom_tabla', reseed, valor (tiene que ser un entero))
+---dbcc checkident ('nom_tabla', reseed, valor (tiene que ser un entero))
 
 
 
---b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
+--LISTO--b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
 
 select u.usuarioId, u.usuarioTelefono
 from usuario u, chatParticipante cp, grupoAdmin g
@@ -33,33 +27,35 @@ and cp.chatId IN (select chatId from chat where esGrupo = 1)
 and g.usuarioId IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
 
 
-
---c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad,
---	 la cantidad de grupos en los que participa y la cantidad de chat no grupales en los que participa.
---	 En caso de que el usuario no participe en chats, igual deberá aparecer en el resultado de la consulta.
+--LISTO -- c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad,
+----------	 la cantidad de grupos en los que participa y la cantidad de chat no grupales en los que participa.
+----------	 En caso de que el usuario no participe en chats, igual deberá aparecer en el resultado de la consulta.
 
 
 select distinct usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, COUNT(cp.chatId) CantGrupos, COUNT(c.chatId) CanChatNoGrupales
-from usuario u, chat c, chatParticipante cp
-where u.usuarioId = cp.usuarioParticipante
-and cp.chatId = c.chatId
+from usuario u left join chat c 
+on u.usuarioId = c.usuarioCreador
+ left join chatParticipante cp
+on  u.usuarioId = cp.usuarioParticipante
 group by  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, cp.chatId, c.chatId
-
-
-select distinct usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad
-from usuario u
-
-
-select usuarioId, COUNT(chatId)
-from usuario u, chat c
-where u.usuarioId = c.usuarioCreador
-
 
 
 -- d. Realizar una consulta que devuelva para cada usuario (id de usuario) el id del chat de grupo con más usuarios al que 
 -- pertenece. En caso de que haya más de un grupo con la máxima cantidad, deben aparecer todos en el resultado de la 
 -- consulta (id usuario, id chat). En caso de que haya usuarios que no participen en grupos, también deberán aparecer 
 -- en el resultado de la consulta.
+
+select u.usuarioId, c.chatId
+from usuario u left join chat c
+on u.usuarioId = c.usuarioCreador
+left join chatParticipante cp
+on u.usuarioId = cp.usuarioParticipante
+group by u.usuarioId, c.chatId
+having count(usuarioParticipante) >= All (
+						select count(usuarioParticipante) suma
+						from chatParticipante cp
+						group by (chatId)
+						)
 
 
 -- e. Mostrar los datos de los usuarios que no sean administradores de grupos, que participen en más de 4 grupos y que hayan
