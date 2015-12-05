@@ -136,25 +136,33 @@ insert chatParticipante
 select i.chatId, i.usuarioParticipante	
 	from inserted i, chat ch
 	where ch.chatId = i.chatId
-	AND ch.esGrupo = 1	
+	AND ((ch.esGrupo = 1)	
 	or (ch.esGrupo = 0 
-		and 2 < (select count(chatId)
+		and 2 > (select count(chatId)
 				from chatParticipante ch
-				where ch.chatId = i.chatId)
 end
 
 
-insert into chatParticipante values
-	(1, 7)
-	
+insert into chatParticipante values	
+(1, 6)
+
+select *
+from chat where chatid = 1
+
+DELETE FROM CHATPARTICIPANTE WHERE CHATID = 1
+
+select *
+from chatParticipante
+where chatid = 1
+
 
 select i.chatId, i.usuarioParticipante	
 	from inserted i, chat ch
 	where ch.chatId = i.chatId
 	AND ch.esGrupo = 'TRUE'
-	or 2 < (select count(chatId)
+	or (2 < (select count(chatId)
 				from chatParticipante ch
-				where ch.chatId = 1)
+				where ch.chatId = 1))
 
 insert chatParticipante values (19, 2)
 
