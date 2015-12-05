@@ -61,20 +61,40 @@ having count(usuarioParticipante) >= All (
 -- e. Mostrar los datos de los usuarios que no sean administradores de grupos, que participen en más de 4 grupos y que hayan
 -- sido bloqueados por más usuarios que la cantidad de contactos que tiene.
 
+select u.*
+	from usuario u, contacto c, bloqueado b
+	where u.usuarioId = c.usuarioId
+	and b.usuarioId = u.usuarioId
+	and u.usuarioId NOT IN (select usuarioId from grupoAdmin)
+	and u.usuarioId IN (select usuarioParticipante from chatParticipante 
+							where 4 <ANY (select count(chatId) from chatParticipante group by usuarioParticipante))
+
+	and 
+	and (select count(contactoId) from contacto group by usuarioId)    
+	< (select count(usuarioId) from bloqueado group by contactoBloqueadoId)
+		
+	
+
+	
+
+
+
+
 
 -- f. Devolver id y teléfono de los usuarios que: o no participan de chats grupales, o participan en más de 5 chats grupales
 -- con más de 5 participantes cada uno.
 
 
 --g. Devolver id y nombre de los países con más de 3 chats que solo tengan participantes del país.
+
 select p.paisId, p.paisNombre
 from pais p, usuario u, chat c
 where p.paisId = u.paisId
 and c.usuarioCreador = u.usuarioId
+and 3 < (select count(chatId) from chatParticipante
+				group by usuarioParticipante)
 
-select p.paisId
-from pais p, chat c
-where p.paisId = 
+
 
 
 -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
