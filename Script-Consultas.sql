@@ -122,75 +122,34 @@ OR u.usuarioId in( select usuarioParticipante
 
 select p.paisId, p.paisNombre
 from pais p
-where paisId IN (select distinct paisId
-						 from usuario 
-						 where usuarioId IN (select usuarioCreador 
-											 from chat))
-
-and paisId IN (select paisId  from usuario 
-					where usuarioId IN ())
-
-
-and 3 < (select count(chatId) from chatParticipante
-				group by usuarioParticipante)
-
-
-
-
+where 3 < (select count(*)
+		   from chat c
+		   where not exists(select 1
+							from chatParticipante cp
+							join usuario u on u.usuarioId = cp.usuarioParticipante
+							where cp.chatId = c.chatId and u.paisId != p.paisId
+							) 
+				and exists (select 1
+							from chatParticipante cp
+							join usuario u on u.usuarioId = cp.usuarioParticipante
+							where cp.chatId = c.chatId and u.paisId = p.paisId
+							)
+		   )
+ 
 -- Listo pero AMBIGUO -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
 -- mensajes generados el año pasado.
 
 select distinct u.usuarioId, u.usuarioTelefono
-from usuario u, mensaje m
-where u.usuarioId = m.usuarioId
-and u.usuarioId in(
-					select usuarioId
-					from mensaje m
-					where m.mensajeTipo = 'Audio'
-					group by usuarioId
-					having count(m.mensajeId) > (
-													select count(*)
-													from mensaje m
-													where year(m.fechaMensaje) = YEAR(GETDATE()-1)
-												 )
-)
+from usuario u
+join mensaje m on m.usuarioId = u.usuarioId
+where m.mensajeTipo = 'Audio'
+group by u.usuarioId, u.usuarioTelefono
+having count(*) > (select count(*) from mensaje m2 where m2.usuarioId = u.usuarioId and year(m2.fechaMensaje) = year(getdate()-1) )
 
 -- i. Devolver para cada país el promedio de contactos por usuario.
 
-select p.paisId, (
-					(select count(contactoId) from contacto)
-					/(select count(distinct c.usuarioId) from contacto c)
-				 )
+select p.paisId, p.paisNombre, (select count(*) from usuario u2 join contacto c on c.usuarioId = u2.usuarioId where u2.paisId = p.paisId)/nullif((select count(*) from usuario u where u.paisId = p.paisId),0)
 from pais p
-group by (paisId)
-
-select count(contactoId)
-from contacto c, usuario u
-
-
--------------------------------------------------
-
-select p.paisId, (c.contactoId) AS Contacto
-from pais p, usuario u, contacto c
-where p.paisId = u.paisId
-and u.usuarioId = c.contactoId
-GROUP BY p.paisId
-
-
-
-
-select *
-from usuario
-
-select *
-from contacto
-
-select c.usuarioId, p.paisId, COUNT(c.usuarioId)
-from contacto c, pais p, usuario u
-where c.usuarioId = u.usuarioId
-and p.paisId = u.paisId
-and u.usuarioId = c.usuarioId
-group by c.usuarioId, p.paisId
 
 
 -- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
