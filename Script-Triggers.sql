@@ -126,7 +126,7 @@ from chatParticipante
 
 -- LISTO d. No permitir que haya más de 2 participantes de un chat si el chat no es grupal.
 
-alter trigger tr_ejer_d
+create trigger tr_ejer_d
 on chatParticipante 
 instead of insert 
 as
@@ -136,10 +136,15 @@ insert chatParticipante
 select i.chatId, i.usuarioParticipante	
 	from inserted i, chat ch
 	where ch.chatId = i.chatId
-	AND ((ch.esGrupo = 1)	
-	or (ch.esGrupo = 0 
-		and 2 > (select count(chatId)
-				from chatParticipante ch
+	AND (
+			(ch.esGrupo = 1)	
+			or (ch.esGrupo = 0
+				and 2 > (
+						select count(chatId)
+						from chatParticipante ch
+						)
+				)
+		)
 end
 
 
@@ -147,7 +152,8 @@ insert into chatParticipante values
 (1, 6)
 
 select *
-from chat where chatid = 1
+from chat
+where chatid = 1
 
 DELETE FROM CHATPARTICIPANTE WHERE CHATID = 1
 
