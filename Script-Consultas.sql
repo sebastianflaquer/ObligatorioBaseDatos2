@@ -11,11 +11,6 @@ having COUNT(*)
 			and usuarioCreador IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
 			group by m.chatId)
 
-
-/* para lipiar el ident */
----dbcc checkident ('nom_tabla', reseed, valor (tiene que ser un entero))
-
-
 --LISTO--b. Mostrar id y teléfono de los usuarios de Uruguay que son administradores de todos los grupos en los que participa.
 
 select u.usuarioId, u.usuarioTelefono
@@ -37,15 +32,7 @@ left join chatParticipante cp
 on  u.usuarioId = cp.usuarioParticipante
 group by  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, cp.chatId, c.chatId
 
-select *
-from chatParticipante
-
-select *
-from chat
-
-select *
-from usuario
-
+---------------------------------------------------
 select  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, count(distinct c1.chatid) Grupos, COUNT(distinct c2.chatId) NoGrupos
 from 
  usuario u left join
@@ -164,10 +151,6 @@ where m.mensajeTipo = 'Audio'
 group by u.usuarioId, u.usuarioTelefono
 having count(*) > (select count(*) from mensaje m2 where m2.usuarioId = u.usuarioId and year(m2.fechaMensaje) = year(getdate()-1) )
 
-select *
-from mensaje m
-where m.fechaMensaje = YEAR(GETDATE()-1)
-
 
 -- LISTO -- i. Devolver para cada país el promedio de contactos por usuario.
 
@@ -179,6 +162,7 @@ select p.paisId, p.paisNombre, (select count(*)
 																	where u.paisId = p.paisId),0)
 from pais p
 
+
 --REVISAR-- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
 
 select c.*	
@@ -186,7 +170,6 @@ from chat c
 where esGrupo = 1
 and ((select count(*) from chatParticipante c3 where c3.chatId = c.chatId) / 2) 
 	< (select count(*) from grupoAdmin g2 where g2.chatId = c.chatId)
-
 
 
 --REVISAR-- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido

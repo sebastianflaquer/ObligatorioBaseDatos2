@@ -1,4 +1,6 @@
+go
 Create database ObligatorioBD2;
+go
 
 use ObligatorioBD2;
 

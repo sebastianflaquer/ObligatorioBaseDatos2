@@ -241,9 +241,6 @@ insert into pais values
 	('ZMB', 'Zambia'), 
 	('ZWE', 'Zimbabue')
 
-select *
-from usuario
-
 insert into usuario (usuarioTelefono, usuarioNombre, usuarioUltimaActividad, usuarioEstado, paisId) values
 	('23259874','Carlos Montero','2012-10-23 20:44:11','En el Gimnasio','BEL'),
 	('36584569','Pablo Pintos','2010-01-05 20:44:11','En el Trabajo','DEU'),
@@ -582,15 +579,6 @@ insert into llamada values
 	(32, 13, '2013-08-30T17:27:12', '2013-08-30T17:37:12', 10, 0), 
 	(24, 26, '2012-03-04T18:27:12', '2012-03-04T18:48:12', 20, 1),
 	(25, 4, '2012-08-03T19:27:12', '2012-08-03T19:43:12', 14, 0)
-
-delete llamada
-
-select *
-from llamada
-
-select *
-from usuario
-
 
 insert into contacto values
 	(1, 19),
