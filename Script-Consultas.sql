@@ -142,13 +142,40 @@ from pais p
 
 
 
--- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
+--REVISAR-- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
 
 
--- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido
+select c.*	
+from chat c
+where esGrupo = 1
+and ((select count(*) from chatParticipante c3 where c3.chatId = c.chatId) / 2) 
+	< (select count(*) from grupoAdmin g2 where g2.chatId = c.chatId)
+
+
+
+
+--REVISAR-- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido
 -- receptores de llamadas de más de 3 usuarios distintos de al menos 10 segundos de duración y que no tengan más de 10
 -- llamadas sin responder.
 
 
---l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
+select u.usuarioId, SUM(l.duracion) totalHablado
+from usuario u, llamada l
+where u.usuarioId = l.llamador
+and usuarioId IN (select receptor from llamada
+					where 3 < (select count(distinct llamador) from llamada l2 where l2.receptor = l.llamador and duracion >= 10)
+					and 10 > (select count(*) from llamada l3 where l3.receptor = l.llamador and respondida = 0))
+group by u.usuarioId
+
+
+	
+
+--A MEDIA--l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
 -- algún usuario.
+
+select chatId
+from chat
+where chatId IN (select chatId from chatParticipante c3 
+								where c3.chatId = chat.chatId
+								group by usuarioParticipante
+							    having count(*) > 10)
