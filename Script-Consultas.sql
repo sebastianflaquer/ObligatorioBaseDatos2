@@ -58,7 +58,7 @@ having count(usuarioParticipante) >= All (
 						)
 
 
--- FALTA -- e. Mostrar los datos de los usuarios que no sean administradores de grupos, que participen en más de 4 grupos y que hayan
+-- LISTO -- e. Mostrar los datos de los usuarios que no sean administradores de grupos, que participen en más de 4 grupos y que hayan
 -- sido bloqueados por más usuarios que la cantidad de contactos que tiene.
 
 	select u.*
@@ -70,30 +70,12 @@ having count(usuarioParticipante) >= All (
 						from chatParticipante
 						group by usuarioParticipante
 						HAVING COUNT(chatId) > 4)
-	and (select count(contactoId) from contacto where usuarioId = 10)
-	< (select count(usuarioId) from bloqueado where contactoBloqueadoId = 10)
+	and (select count(contactoId) from contacto where usuarioId = u.usuarioId)
+	< (select count(usuarioId) from bloqueado where contactoBloqueadoId = u.usuarioId)
 
 
 
-
-	and(
-	select count(contactoId) 
-	from contacto 
-	where usuarioId = 10
-	)	
-	< (select count(usuarioId) from bloqueado where contactoBloqueadoId = 10)
-
-	/* bolaso */
-
-		and u.usuarioId IN (
-		select contactoBloqueadoId 
-		from bloqueado
-		group by contactoBloqueadoId
-		having count(contactoBloqueadoId) > (
-												select 
-												)
-	)
-
+	
 -- LISTO -- f. Devolver id y teléfono de los usuarios que: o no participan de chats grupales, o participan en más de 5 chats grupales
 -- con más de 5 participantes cada uno.
 
@@ -118,7 +100,7 @@ OR u.usuarioId in( select usuarioParticipante
 				   HAVING COUNT(c2.chatId) > 5
 				   )
 
--- falta, raro la letra --g. Devolver id y nombre de los países con más de 3 chats que solo tengan participantes del país.
+-- LISTO --g. Devolver id y nombre de los países con más de 3 chats que solo tengan participantes del país.
 
 select p.paisId, p.paisNombre
 from pais p
@@ -136,7 +118,7 @@ where 3 < (select count(*)
 							)
 		   )
  
--- Listo pero AMBIGUO -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
+-- LISTO -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
 -- mensajes generados el año pasado.
 
 select distinct u.usuarioId, u.usuarioTelefono
@@ -146,10 +128,18 @@ where m.mensajeTipo = 'Audio'
 group by u.usuarioId, u.usuarioTelefono
 having count(*) > (select count(*) from mensaje m2 where m2.usuarioId = u.usuarioId and year(m2.fechaMensaje) = year(getdate()-1) )
 
--- i. Devolver para cada país el promedio de contactos por usuario.
 
-select p.paisId, p.paisNombre, (select count(*) from usuario u2 join contacto c on c.usuarioId = u2.usuarioId where u2.paisId = p.paisId)/nullif((select count(*) from usuario u where u.paisId = p.paisId),0)
+
+-- LISTO -- i. Devolver para cada país el promedio de contactos por usuario.
+
+select p.paisId, p.paisNombre, (select count(*) 
+								from usuario u2 join contacto c 
+								on c.usuarioId = u2.usuarioId 
+								where u2.paisId = p.paisId)/nullif((select count(*) 
+																	from usuario u 
+																	where u.paisId = p.paisId),0)
 from pais p
+
 
 
 -- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
