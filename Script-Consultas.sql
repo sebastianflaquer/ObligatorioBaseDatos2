@@ -196,9 +196,21 @@ group by c.usuarioId, p.paisId
 -- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
 
 
+/* la paso denise */
+select cp.chatId, c.usuarioCreador, c.chatFechaCreacion, c.esGrupo
+from chatParticipante cp, chat c, grupoAdmin ga
+where cp.chatId = c.chatId
+AND cp.chatId = ga.chatId
+AND c.esGrupo = 1
+group by cp.chatId, c.usuarioCreador, c.chatFechaCreacion, c.esGrupo
+having count(ga.usuarioId)>(select count(cp2.usuarioParticipante)/2 from chatParticipante cp2 where cp2.chatId = cp.chatId)
+/* la paso denise */
+
+
 -- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido
 -- receptores de llamadas de más de 3 usuarios distintos de al menos 10 segundos de duración y que no tengan más de 10
 -- llamadas sin responder.
+
 
 
 --l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
