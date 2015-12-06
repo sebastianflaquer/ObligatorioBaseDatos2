@@ -225,8 +225,6 @@ create procedure usuariosPais
 
 -- g. Crear una función 'usuarioMasMensajesTextoAnio' que reciba como parámetro un año y devuelva el id del usuario
 -- que escribió más mensajes del tipo texto en el año.
-
-
 -- dado un año dame el id de usuario que tiene mas mensajes de tipo texto
 
 /**************************************************************************** mauro */
@@ -249,8 +247,8 @@ having COUNT(*) >= all (select count(mensajeId) from mensaje where mensajeTipo =
 end
 
 
-
 /**************************************************************************** mauro */
+
 
 select m.usuarioId
 from mensaje m
@@ -264,107 +262,3 @@ select m.usuarioId
 from mensaje m
 where mensajeTipo = 'Texto'
 and year(fechaMensaje) = 2015
-
-
-
-
-
-
-
---ESTO NO SE QUE ES
-----------------------------------------------------------------------------------------------------------------
-
-create procedure sp_cambio_supervisor 
-	@codigoProy int,
-	@documento varchar(8),
-	@mensaje varchar(50) output
-
-	as
-	begin
-
-
-	IF EXISTS ( select * from proyecto where cod_proy = @codigoProy)
-	begin
-	IF EXISTS ( select * from empleado where nro_doc = @documento)
-	begin
-		update proyecto
-		set supervisor = @documento
-		where cod_proy = @codigoProy	
-	end
-	else
-		begin
-		set @mensaje = 'No existe documento'
-		end
-	end
-	else
-	begin
-	set @mensaje = 'No existe proyecto'
-
-	end
-	end	
-
-	declare @m1 varchar(50)
-	exec sp_cambio_supervisor 103, '44177318', @m1 output
-	print @m1	
-
-
-
-
-
-
-
-
-
-
-create procedure sp_empleado 
-    @documento varchar(8),
-	@nombre varchar(40),
-	@direccion varchar(40),
-	@depto int,
-	@numCobro varchar(8)
-  	as
-	BEGIN
-    IF EXISTS ( select * from empleado where nro_doc = @documento)
-	
-	BEGIN
-	 update empleado
-	 set nro_doc = @documento,
-	  nom_emp = @nombre,
-	  dir_emp = @direccion,
-	  cod_depto = @depto,
-	  nro_cobro = @numCobro
-	END
-
-   ELSE 	
-	BEGIN
-	insert into empleado
-	(nro_doc, nom_emp, dir_emp, cod_depto, Nro_cobro) values
-	(@documento, @nombre, @direccion, @depto, @numCobro)
-	END
-	end
-
-
-exec sp_empleado '44177308', 'Mauro', 'Rivera 1234', 2, 1891
-
----------------------------------------------------------------------
-
-
-
-CREATE PROCEDURE Update_Empresa	
-	@Nombre varchar(30),
-	@Telefono varchar(50),
-	@Mails varchar(300),
-	@Url varchar(50),
-	@idEmpresa int
-
-	As BEGIN
-	SET NOCOUNT ON
-
-		UPDATE Empresas
-		SET Nombre=@Nombre,Telefono=@Telefono, Mails=@Mails, Url=@Url
-		WHERE IdEmpresa=@idEmpresa;
-		
-	END 
-	GO
-
-	exec Empresa_Insert 'Juan','123456','hola','holaurl', 7
