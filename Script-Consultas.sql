@@ -170,12 +170,16 @@ group by u.usuarioId
 
 	
 
---A MEDIA--l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
+--REVISAR--l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
 -- algún usuario.
 
-select chatId
-from chat
-where chatId IN (select chatId from chatParticipante c3 
-								where c3.chatId = chat.chatId
+select c.chatId
+from chat c
+where esGrupo = 1 
+and c.chatId IN (select c2.chatId from chatParticipante c2 
+								where c2.chatId = c.chatId
 								group by usuarioParticipante
 							    having count(*) > 10)
+and c.chatId NOT IN (select c3.chatId from chatParticipante c3
+							where c3.usuarioParticipante IN (select b.contactoBloqueadoId 
+																from bloqueado b))
