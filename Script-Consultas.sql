@@ -26,19 +26,38 @@ and cp.usuarioParticipante = g.usuarioId
 and cp.chatId IN (select chatId from chat where esGrupo = 1)
 and g.usuarioId IN (select usuarioId from usuario where paisId = (select paisId from pais where paisNombre = 'Uruguay'))
 
-
---LISTO -- c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad,
+---- c. Proporcionar un listado con el id, teléfono y nombre de cada usuario, conjuntamente con la fecha de última actividad,
 ----------	 la cantidad de grupos en los que participa y la cantidad de chat no grupales en los que participa.
 ----------	 En caso de que el usuario no participe en chats, igual deberá aparecer en el resultado de la consulta.
-
 
 select distinct usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, COUNT(cp.chatId) CantGrupos, COUNT(c.chatId) CanChatNoGrupales
 from usuario u left join chat c 
 on u.usuarioId = c.usuarioCreador
- left join chatParticipante cp
+left join chatParticipante cp
 on  u.usuarioId = cp.usuarioParticipante
 group by  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, cp.chatId, c.chatId
 
+select *
+from chatParticipante
+
+select *
+from chat
+
+select *
+from usuario
+
+select  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad, count(distinct c1.chatid) Grupos, COUNT(distinct c2.chatId) NoGrupos
+from 
+ usuario u left join
+chatParticipante Cp1
+on u.usuarioId = cp1.usuarioParticipante 
+left join  Chat c1 
+on c1.chatId = Cp1.chatId and c1.esGrupo = 1
+left join chatParticipante cp2
+on cp2.usuarioParticipante = cp1.usuarioParticipante
+left join chat c2
+on c2.chatId = cp2.chatId and c2.esGrupo = 0
+group by  usuarioId, usuarioTelefono, usuarioNombre, usuarioUltimaActividad
 
 -- d. Realizar una consulta que devuelva para cada usuario (id de usuario) el id del chat de grupo con más usuarios al que 
 -- pertenece. En caso de que haya más de un grupo con la máxima cantidad, deben aparecer todos en el resultado de la 
@@ -65,17 +84,30 @@ having count(usuarioParticipante) >= All (
 -- f. Devolver id y teléfono de los usuarios que: o no participan de chats grupales, o participan en más de 5 chats grupales
 -- con más de 5 participantes cada uno.
 
+select u.usuarioId, u.usuarioTelefono
+from usuario u, chat c, chatParticipante ch
+where u.usuarioId = ch.usuarioParticipante
+AND ch.chatId = c.chatId
+AND c.esGrupo = 0
+AND u.usuarioId in()
+
+select u.usuarioId
+from usuario u1, chat c1, chatParticipante ch1
+where u1.usuarioId = ch1.usuarioParticipante
+AND ch1.chatId = c1.usuarioCreador
+
 
 --g. Devolver id y nombre de los países con más de 3 chats que solo tengan participantes del país.
-select p.paisId, p.paisNombre
-from pais p, usuario u, chat c
+
+select distinct p.paisId, p.paisNombre
+from pais p, usuario u, chatParticipante cp
 where p.paisId = u.paisId
-and c.usuarioCreador = u.usuarioId
-
-select p.paisId
-from pais p, chat c
-where p.paisId = 
-
+and u.usuarioId = cp.usuarioParticipante
+and chatId not In (select chatId
+						from chatParticipante cp1, usuario u2
+						where u2.usuarioId = cp1.usuarioParticipante
+						AND u2.paisId <> p.paisId
+						and cp1.chatId = cp.chatId)
 
 -- h. Devolver id y teléfono de los usuarios que a la fecha hayan generado más mensajes de audio que la cantidad total de
 -- mensajes generados el año pasado.
@@ -83,13 +115,11 @@ where p.paisId =
 select u.usuarioId, u.usuarioTelefono
 from usuario u, mensaje m
 
-
 select *
 from mensaje m
 where m.fechaMensaje = YEAR(GETDATE()-1)
 
-
--- i. Devolver para cada país el promedio de contactos por usuario.
+-- i. Devolver para cada país el promedio de contactos por usuario. - Usar como tabla un select.
 
 select p.paisId, AVG(c.contactoId) AS Contacto
 from pais p, usuario u, contacto c
