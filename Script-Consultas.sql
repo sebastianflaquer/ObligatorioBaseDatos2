@@ -129,13 +129,12 @@ having count(*) > (select count(*) from mensaje m2 where m2.usuarioId = u.usuari
 -- LISTO -- i. Devolver para cada país el promedio de contactos por usuario.
 
 select p.paisId, p.paisNombre, (select count(*) 
-								from usuario u2 join contacto c 
-								on c.usuarioId = u2.usuarioId 
-								where u2.paisId = p.paisId)/nullif((select count(*) 
+								from usuario u2 , contacto c 
+								where c.usuarioId = u2.usuarioId 
+								and u2.paisId = p.paisId)/nullif((select count(*) 
 																	from usuario u 
 																	where u.paisId = p.paisId),0)
 from pais p
-
 
 -- LISTO-- j. Mostrar los datos de los chats grupales que tengan a más de la mitad de sus participantes como administradores.
 
@@ -146,30 +145,45 @@ and ((select count(*) from chatParticipante c3 where c3.chatId = c.chatId) / 2)
 	< (select count(*) from grupoAdmin g2 where g2.chatId = c.chatId)
 
 
---REVISAR-- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido
--- receptores de llamadas de más de 3 usuarios distintos de al menos 10 segundos de duración y que no tengan más de 10
+-- LISTO -- k. Devolver para cada usuario la cantidad total de segundos hablados, considerandos solamente los usuarios que hayan sido
+-- recptoeres de llamadas de más de 3 usuarios distintos de al menos 10 segundos de duración y que no tengan más de 10
 -- llamadas sin responder.
 
-
-select u.usuarioId, SUM(l.duracion) totalHablado
+select distinct u.usuarioId, SUM(l.duracion) totalHablado
 from usuario u, llamada l
 where u.usuarioId = l.llamador
-and usuarioId IN (select receptor from llamada
-					where 3 < (select count(distinct llamador) from llamada l2 where l2.receptor = l.llamador and duracion >= 10)
-					and 10 > (select count(*) from llamada l3 where l3.receptor = l.llamador and respondida = 0))
+and u.usuarioId IN (
+				  select receptor from llamada
+				  where 3 < (
+								select count(distinct llamador) 
+								from llamada l2 
+								where l2.receptor = l.llamador 
+								and duracion >= 10
+							)
+				  and 10 > (
+								select count(*) 
+								from llamada l3 
+								where l3.receptor = l.llamador 
+								and respondida = 0)
+							)
 group by u.usuarioId
 
 
---REVISAR--l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
+
+
+-- LISTO -- l. Devolver id de los chats grupales con más de 10 participantes, que no tengan participantes que estén bloqueados por
 -- algún usuario.
 
 select c.chatId
 from chat c
 where esGrupo = 1 
-and c.chatId IN (select c2.chatId from chatParticipante c2 
-								where c2.chatId = c.chatId
-								group by usuarioParticipante
-							    having count(*) > 10)
-and c.chatId NOT IN (select c3.chatId from chatParticipante c3
-							where c3.usuarioParticipante IN (select b.contactoBloqueadoId 
-																from bloqueado b))
+and c.chatId IN ( select c2.chatId 
+				  from chatParticipante c2 
+				  where c2.chatId = c.chatId
+				  group by chatId
+				  having count(*) > 10)
+and c.chatId NOT IN ( select c3.chatId 
+					  from chatParticipante c3
+					  where c3.usuarioParticipante IN ( select b.contactoBloqueadoId
+														from bloqueado b)
+													   )
